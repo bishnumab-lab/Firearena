@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bharat Battle Admin</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+:root{--p:#2979FF;--pl:#5B9BFF;--pb:#EEF4FF;--s:#10B981;--d:#EF4444;--w:#F59E0B;--pu:#8B5CF6;--or:#FF6B35;
+--bg:#F4F7FF;--c:#fff;--c2:#F8FAFF;--br:#E5EEFF;--t:#1A2340;--t2:#4A5580;--t3:#8B96B8;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+body{background:var(--bg);color:var(--t);min-height:100vh;display:flex;}
+.ldr{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:9999;}
+.ldr.hide{display:none;}
+.ldr-sp{width:40px;height:40px;border:3px solid var(--br);border-top-color:var(--or);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sb{width:248px;min-height:100vh;background:var(--c);border-right:1.5px solid var(--br);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;box-shadow:0 4px 24px rgba(255,107,53,.08);}
+.sb-logo{padding:18px;border-bottom:1.5px solid var(--br);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#FF4500,#FF6B35);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.sb-title{font-size:14px;font-weight:800;color:var(--t);}
+.sb-sub{font-size:9px;color:var(--or);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto;}
+.nav-lbl{font-size:9px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;padding:8px 10px 4px;}
+.nav-i{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--t2);font-size:13px;font-weight:600;margin-bottom:2px;position:relative;}
+.nav-i:hover{background:var(--pb);color:var(--p);}
+.nav-i.act{background:var(--pb);color:var(--p);font-weight:700;border:1.5px solid rgba(41,121,255,.15);}
+.nav-i.act::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--p);border-radius:0 3px 3px 0;}
+.nav-i i{width:16px;text-align:center;font-size:13px;flex-shrink:0;}
+.nbdg{margin-left:auto;background:var(--d);color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700;display:none;}
+.nbdg.on{display:inline-block;}
+.sb-foot{padding:12px;border-top:1.5px solid var(--br);}
+.adm-info{display:flex;align-items:center;gap:9px;}
+.adm-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FF4500,#FF6B35);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;}
+.adm-name{font-size:12px;font-weight:700;color:var(--t);}
+.adm-role{font-size:10px;color:var(--or);font-weight:600;}
+.logout{margin-left:auto;width:30px;height:30px;border-radius:9px;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;}
+.main{margin-left:248px;flex:1;display:flex;flex-direction:column;}
+.topbar{padding:14px 22px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--br);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(255,107,53,.07);}
+.tb-title{font-size:18px;font-weight:800;color:var(--t);}
+.tb-right{display:flex;gap:10px;}
+.tb-stat{display:flex;align-items:center;gap:6px;background:var(--pb);border:1.5px solid rgba(41,121,255,.15);border-radius:10px;padding:7px 13px;}
+.tb-stat-v{font-size:14px;font-weight:800;color:var(--p);}
+.tb-stat-l{font-size:11px;color:var(--t3);font-weight:600;}
+.content{padding:18px;flex:1;}
+.sec{display:none;}.sec.act{display:block;}
+.stats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.stat-c{background:var(--c);border:1.5px solid var(--br);border-radius:14px;padding:18px;box-shadow:0 2px 12px rgba(41,121,255,.07);transition:all .2s;}
+.stat-c:hover{transform:translateY(-2px);}
+.si{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px;}
+.sb-p .si{background:rgba(41,121,255,.1);color:var(--p);}
+.sb-s .si{background:rgba(16,185,129,.1);color:var(--s);}
+.sb-w .si{background:rgba(245,158,11,.1);color:var(--w);}
+.sb-pu .si{background:rgba(139,92,246,.1);color:var(--pu);}
+.sb-or .si{background:rgba(255,107,53,.1);color:var(--or);}
+.sv{font-size:24px;font-weight:800;color:var(--t);letter-spacing:-1px;}
+.sl{font-size:11px;color:var(--t3);font-weight:600;margin-top:2px;}
+.card{background:var(--c);border:1.5px solid var(--br);border-radius:14px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(41,121,255,.07);}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:13px 17px;border-bottom:1.5px solid var(--br);background:var(--c2);}
+.ct{font-size:13px;font-weight:700;color:var(--t);display:flex;align-items:center;gap:7px;}
+.ct i{color:var(--p);}
+.cb{padding:17px;}
+.tw{background:var(--c);border:1.5px solid var(--br);border-radius:14px;overflow-x:auto;box-shadow:0 2px 12px rgba(41,121,255,.07);}
+table{width:100%;border-collapse:collapse;min-width:560px;}
+thead tr{background:var(--c2);}
+th{padding:11px 13px;text-align:left;font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:1.5px solid var(--br);}
+td{padding:11px 13px;font-size:13px;color:var(--t);border-top:1px solid var(--br);vertical-align:middle;}
+tr:hover td{background:var(--pb);}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:9px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;white-space:nowrap;}
+.btn:active{transform:scale(.97);}
+.btn-p{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;box-shadow:0 4px 14px rgba(41,121,255,.3);}
+.btn-s{background:linear-gradient(135deg,var(--s),#34D399);color:#fff;}
+.btn-d{background:linear-gradient(135deg,var(--d),#F87171);color:#fff;}
+.btn-w{background:linear-gradient(135deg,var(--w),#FCD34D);color:#000;}
+.btn-or{background:linear-gradient(135deg,var(--or),#FF8C00);color:#fff;}
+.btn-pu{background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;}
+.btn-g{background:var(--c);border:1.5px solid var(--br);color:var(--t2);}
+.btn-g:hover{border-color:var(--p);color:var(--p);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-ic{width:28px;height:28px;padding:0;justify-content:center;border-radius:7px;}
+.fg{margin-bottom:13px;}
+.fg label{display:block;font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--bg);border:1.5px solid var(--br);border-radius:9px;color:var(--t);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;padding:9px 12px;outline:none;transition:all .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--p);background:var(--pb);}
+.fg textarea{resize:vertical;min-height:75px;line-height:1.6;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;}
+.bdg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.bdg-p{background:rgba(41,121,255,.1);color:var(--p);border:1px solid rgba(41,121,255,.2);}
+.bdg-s{background:rgba(16,185,129,.1);color:var(--s);border:1px solid rgba(16,185,129,.2);}
+.bdg-d{background:rgba(239,68,68,.1);color:var(--d);border:1px solid rgba(239,68,68,.2);}
+.bdg-o{background:rgba(245,158,11,.1);color:var(--w);border:1px solid rgba(245,158,11,.2);}
+.bdg-gr{background:rgba(139,150,184,.1);color:var(--t2);border:1px solid var(--br);}
+.bdg-or{background:rgba(255,107,53,.1);color:var(--or);border:1px solid rgba(255,107,53,.2);}
+.mo{display:none;position:fixed;inset:0;background:rgba(26,35,64,.45);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;padding:16px;}
+.mo.on{display:flex;}
+.md{background:var(--c);border:1.5px solid var(--br);border-radius:18px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(41,121,255,.15);animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;border-bottom:1.5px solid var(--br);position:sticky;top:0;background:var(--c);z-index:1;border-radius:18px 18px 0 0;}
+.mt{font-size:15px;font-weight:800;color:var(--t);}
+.mx{width:28px;height:28px;border-radius:8px;background:var(--bg);border:1.5px solid var(--br);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);font-size:12px;}
+.mx:hover{border-color:var(--d);color:var(--d);}
+.mb{padding:20px;}
+.mf{padding:13px 20px;border-top:1.5px solid var(--br);display:flex;justify-content:flex-end;gap:8px;}
+.ip{width:100%;height:100px;object-fit:cover;border-radius:9px;border:1.5px solid var(--br);display:none;margin-top:6px;}
+.ip.on{display:block;}
+.tabs{display:flex;gap:3px;background:var(--bg);border-radius:9px;padding:3px;margin-bottom:16px;border:1.5px solid var(--br);}
+.tab{flex:1;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;color:var(--t2);text-align:center;transition:all .2s;}
+.tab.act{background:var(--p);color:#fff;}
+.tgl-w{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:var(--bg);border:1.5px solid var(--br);border-radius:9px;margin-bottom:9px;}
+.tgl-l{font-size:13px;font-weight:600;color:var(--t);}
+.tgl-s{font-size:11px;color:var(--t3);margin-top:1px;}
+.tgl{width:44px;height:24px;background:var(--br);border-radius:12px;position:relative;cursor:pointer;transition:background .3s;flex-shrink:0;}
+.tgl.on{background:var(--p);}
+.tgl::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .3s;}
+.tgl.on::after{left:23px;}
+.url-r{display:flex;gap:7px;margin-bottom:9px;align-items:center;}
+.url-r input{flex:1;}
+.url-th{width:36px;height:36px;border-radius:7px;object-fit:cover;border:1.5px solid var(--br);flex-shrink:0;}
+.url-d{width:32px;height:32px;border-radius:7px;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:11px;}
+.ab{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+.si-w{display:flex;align-items:center;gap:7px;background:var(--c);border:1.5px solid var(--br);border-radius:9px;padding:8px 11px;flex:1;max-width:280px;}
+.si-w i{color:var(--t3);font-size:12px;}
+.si-w input{background:none;border:none;outline:none;color:var(--t);font-size:13px;width:100%;}
+.si-w input::placeholder{color:var(--t3);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sc{background:var(--c);border:1.5px solid var(--br);border-radius:14px;padding:18px;}
+.sc-t{font-size:12px;font-weight:800;color:var(--t);margin-bottom:13px;display:flex;align-items:center;gap:7px;padding-bottom:11px;border-bottom:1.5px solid var(--br);}
+.sc-t i{color:var(--p);font-size:14px;}
+.ib{background:var(--pb);border:1.5px solid rgba(41,121,255,.2);border-radius:9px;padding:9px 11px;margin-bottom:11px;font-size:11px;color:var(--p);font-weight:600;}
+.ruc{display:flex;align-items:center;gap:10px;padding:11px;background:var(--bg);border:1.5px solid var(--br);border-radius:9px;margin-bottom:8px;cursor:pointer;transition:all .2s;}
+.ruc:hover,.ruc.sel{border-color:var(--p);background:var(--pb);}
+/* MESSAGE STYLES */
+.mc-w{display:flex;flex-direction:column;}
+.mc{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:7px;max-height:50vh;}
+.mb-a{display:flex;gap:7px;align-items:flex-end;}
+.mb-a.me{flex-direction:row-reverse;}
+.mbl{max-width:72%;padding:9px 13px;border-radius:14px;font-size:13px;font-weight:500;line-height:1.5;word-break:break-word;}
+.mbl.th{background:var(--bg);border:1.5px solid var(--br);color:var(--t);border-bottom-left-radius:3px;}
+.mbl.mi{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;border-bottom-right-radius:3px;}
+.mts{font-size:9px;color:var(--t3);padding:0 2px;margin-top:2px;}
+.ms-r{display:flex;gap:9px;padding:11px 13px;border-top:1.5px solid var(--br);}
+.ms-i{flex:1;background:var(--bg);border:1.5px solid var(--br);border-radius:9px;padding:9px 11px;color:var(--t);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;}
+.ms-i:focus{border-color:var(--p);}
+.nb{background:var(--bg);border:1.5px solid var(--br);border-radius:9px;padding:11px 13px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start;}
+.nt{font-size:13px;color:var(--t);line-height:1.6;flex:1;}
+.nd{font-size:10px;color:var(--t3);margin-top:3px;font-weight:500;}
+.emp{text-align:center;padding:36px 16px;}
+.emp i{font-size:32px;color:var(--br);margin-bottom:10px;display:block;}
+.emp p{font-size:13px;color:var(--t3);font-weight:600;}
+.sp{width:28px;height:28px;border:3px solid var(--br);border-top-color:var(--p);border-radius:50%;animation:spin .8s linear infinite;}
+.ld{display:flex;align-items:center;justify-content:center;padding:28px;gap:10px;color:var(--t3);font-size:13px;}
+.toast{position:fixed;bottom:18px;right:18px;padding:11px 17px;border-radius:9px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:9px;box-shadow:0 8px 32px rgba(41,121,255,.15);border:1.5px solid var(--br);}
+.toast.on{opacity:1;}
+.toast.ok{background:var(--c);border-color:rgba(16,185,129,.4);color:var(--s);}
+.toast.er{background:var(--c);border-color:rgba(239,68,68,.4);color:var(--d);}
+.toast.in{background:var(--c);border-color:rgba(41,121,255,.4);color:var(--p);}
+#ls{display:none;align-items:center;justify-content:center;min-height:100vh;width:100%;background:var(--bg);}
+.lc{background:var(--c);border:1.5px solid var(--br);border-radius:20px;padding:34px;width:100%;max-width:390px;box-shadow:0 20px 60px rgba(255,107,53,.12);}
+.ll{text-align:center;margin-bottom:26px;}
+.li{width:58px;height:58px;border-radius:17px;background:linear-gradient(135deg,#FF4500,#FF6B35);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;box-shadow:0 8px 24px rgba(255,69,0,.35);}
+.lt{font-size:21px;font-weight:800;color:var(--t);}
+.ls-s{font-size:13px;color:var(--t3);margin-top:3px;}
+.rm{display:flex;align-items:center;gap:7px;margin-bottom:13px;font-size:13px;color:var(--t2);font-weight:500;cursor:pointer;}
+.rm input{width:15px;height:15px;accent-color:var(--p);}
+.mob-t{display:none;position:fixed;top:11px;left:11px;z-index:200;width:36px;height:36px;background:var(--c);border:1.5px solid var(--br);border-radius:10px;align-items:center;justify-content:center;cursor:pointer;color:var(--t);font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.sb-bd{display:none;position:fixed;inset:0;background:rgba(26,35,64,.4);z-index:99;backdrop-filter:blur(2px);}
+/* REDEEM CODE STYLES */
+.rc-card{background:var(--c);border:1.5px solid var(--br);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.rc-code{font-size:16px;font-weight:800;color:var(--pu);font-family:monospace;letter-spacing:2px;flex:1;}
+.rc-info{font-size:11px;color:var(--t2);margin-top:3px;}
+.rc-badge{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.rc-active{background:rgba(16,185,129,.1);color:var(--s);border:1px solid rgba(16,185,129,.2);}
+.rc-inactive{background:rgba(139,150,184,.1);color:var(--t2);border:1px solid var(--br);}
+/* AUTO MSG BADGE */
+.auto-msg-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:6px;padding:2px 8px;font-size:10px;color:var(--s);font-weight:700;margin-left:8px;}
+@media(max-width:1024px){
+.sb{transform:translateX(-100%);}.sb.open{transform:translateX(0);}
+.main{margin-left:0;}.mob-t{display:flex!important;}.sb-bd.on{display:block;}
+.stats-g{grid-template-columns:1fr 1fr;}.sg{grid-template-columns:1fr;}
+.topbar{padding:12px 14px 12px 56px;}.r2{grid-template-columns:1fr;}}
+@media(max-width:640px){
+.content{padding:11px;}.stats-g{grid-template-columns:1fr 1fr;}.fg2,.fg3{grid-template-columns:1fr;}
+.tb-stat{display:none;}.sg{grid-template-columns:1fr;}.r2{grid-template-columns:1fr;}}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="ldr" id="ldr">
+  <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#FF4500,#FF6B35);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:4px;box-shadow:0 8px 24px rgba(255,69,0,.35)">🔥</div>
+  <div class="ldr-sp"></div>
+  <div style="font-size:13px;color:#4A5580;font-weight:700;margin-top:4px">Bharat Battle Admin</div>
+  <div style="font-size:11px;color:#8B96B8;font-weight:500">Connecting to Firebase...</div>
+</div>
+
+<div class="mob-t" id="mobT" onclick="toggleSB()"><i class="fa fa-bars"></i></div>
+<div class="sb-bd" id="sbBD" onclick="toggleSB()"></div>
+
+<div id="ls">
+  <div class="lc">
+    <div class="ll"><div class="li">🔥</div><div class="lt">Bharat Battle Admin</div><div class="ls-s">Super Admin Panel</div></div>
+    <div class="fg"><label>Email</label><input type="email" id="aEmail" placeholder="admin@bharatbattle.com" autocomplete="email"></div>
+    <div class="fg"><label>Password</label><input type="password" id="aPass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <label class="rm"><input type="checkbox" id="remMe" checked> Remember me</label>
+    <button class="btn btn-or" style="width:100%;justify-content:center;padding:12px;font-size:14px" onclick="doLogin()"><i class="fa fa-sign-in-alt"></i> Login</button>
+  </div>
+</div>
+
+<div id="app" style="display:none;width:100%">
+  <div class="sb" id="sb">
+    <div class="sb-logo">
+      <div class="sb-icon">🔥</div>
+      <div><div class="sb-title" id="sbName">FIRE ARENA</div><div class="sb-sub">Admin Panel</div></div>
+    </div>
+    <div class="sb-nav">
+      <div class="nav-lbl">Overview</div>
+      <div class="nav-i act" onclick="goSec('dash')"><i class="fa fa-th-large"></i> Dashboard</div>
+      <div class="nav-lbl">Tournament</div>
+      <div class="nav-i" onclick="goSec('tourn')"><i class="fa fa-trophy"></i> Tournaments</div>
+      <div class="nav-i" onclick="goSec('match')"><i class="fa fa-gamepad"></i> Matches</div>
+      <div class="nav-i" onclick="goSec('res')"><i class="fa fa-medal"></i> Results</div>
+      <div class="nav-lbl">Finance</div>
+      <div class="nav-i" onclick="goSec('dep')"><i class="fa fa-arrow-down"></i> Deposits <span class="nbdg" id="depBdg">0</span></div>
+      <div class="nav-i" onclick="goSec('wd')"><i class="fa fa-arrow-up"></i> Withdrawals <span class="nbdg" id="wdBdg">0</span></div>
+      <div class="nav-lbl">Rewards</div>
+      <div class="nav-i" onclick="goSec('redeem')"><i class="fa fa-ticket-alt"></i> Redeem Codes</div>
+      <div class="nav-lbl">Users & Comms</div>
+      <div class="nav-i" onclick="goSec('users')"><i class="fa fa-users"></i> Users</div>
+      <div class="nav-i" onclick="goSec('msgs')"><i class="fa fa-comments"></i> Messages <span class="nbdg" id="msgBdg">0</span></div>
+      <div class="nav-i" onclick="goSec('notif')"><i class="fa fa-bell"></i> Notifications</div>
+      <div class="nav-lbl">Config</div>
+      <div class="nav-i" onclick="goSec('set')"><i class="fa fa-cog"></i> Settings</div>
+    </div>
+    <div class="sb-foot">
+      <div class="adm-info">
+        <div class="adm-av" id="aInit">A</div>
+        <div><div class="adm-name" id="aEmail2">admin</div><div class="adm-role">Super Admin</div></div>
+        <div class="logout" onclick="doLogout()"><i class="fa fa-sign-out-alt"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tbTitle">Dashboard</div>
+      <div class="tb-right">
+        <div class="tb-stat"><span class="tb-stat-v" id="tbU">0</span><span class="tb-stat-l">&nbsp;Users</span></div>
+        <div class="tb-stat"><span class="tb-stat-v" id="tbD">₹0</span><span class="tb-stat-l">&nbsp;Deposits</span></div>
+      </div>
+    </div>
+    <div class="content">
+
+<!-- DASHBOARD -->
+<div class="sec act" id="sec-dash">
+  <div class="stats-g">
+    <div class="stat-c sb-p"><div class="si"><i class="fa fa-users"></i></div><div class="sv" id="dsU">0</div><div class="sl">Total Users</div></div>
+    <div class="stat-c sb-s"><div class="si"><i class="fa fa-rupee-sign"></i></div><div class="sv" id="dsD">₹0</div><div class="sl">Total Deposits</div></div>
+    <div class="stat-c sb-w"><div class="si"><i class="fa fa-trophy"></i></div><div class="sv" id="dsT">0</div><div class="sl">Tournaments</div></div>
+    <div class="stat-c sb-pu"><div class="si"><i class="fa fa-gamepad"></i></div><div class="sv" id="dsM">0</div><div class="sl">Matches</div></div>
+  </div>
+  <div class="r2">
+    <div class="card"><div class="ch"><div class="ct"><i class="fa fa-clock"></i> Pending Deposits</div><button class="btn btn-g btn-sm" onclick="goSec('dep')">View All</button></div><div id="dDep"><div class="ld"><div class="sp"></div></div></div></div>
+    <div class="card"><div class="ch"><div class="ct"><i class="fa fa-clock"></i> Pending Withdrawals</div><button class="btn btn-g btn-sm" onclick="goSec('wd')">View All</button></div><div id="dWd"><div class="ld"><div class="sp"></div></div></div></div>
+  </div>
+</div>
+
+<!-- TOURNAMENTS -->
+<div class="sec" id="sec-tourn">
+  <div class="ab"><div class="si-w"><i class="fa fa-search"></i><input type="text" id="tSrch" placeholder="Search..." oninput="filtT()"></div><button class="btn btn-p" onclick="openTM()"><i class="fa fa-plus"></i> New Tournament</button></div>
+  <div class="tw"><table><thead><tr><th>Image</th><th>Title</th><th>Matches</th><th>Actions</th></tr></thead><tbody id="tBody"><tr><td colspan="4"><div class="ld"><div class="sp"></div></div></td></tr></tbody></table></div>
+</div>
+
+<!-- MATCHES -->
+<div class="sec" id="sec-match">
+  <div class="ab">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <select id="mTF" onchange="renderM()" style="padding:8px 11px;background:var(--c);border:1.5px solid var(--br);border-radius:9px;color:var(--t);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none"><option value="">All Tournaments</option></select>
+      <select id="mSF" onchange="renderM()" style="padding:8px 11px;background:var(--c);border:1.5px solid var(--br);border-radius:9px;color:var(--t);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none"><option value="">All Status</option><option>upcoming</option><option>ongoing</option><option>completed</option></select>
+    </div>
+    <button class="btn btn-p" onclick="openMM()"><i class="fa fa-plus"></i> New Match</button>
+  </div>
+  <div class="tw"><table><thead><tr><th>Image</th><th>Title</th><th>Tournament</th><th>Mode</th><th>Entry</th><th>Prize</th><th>Slots</th><th>Room ID</th><th>Status</th><th>Actions</th></tr></thead><tbody id="mBody"><tr><td colspan="10"><div class="ld"><div class="sp"></div></div></td></tr></tbody></table></div>
+</div>
+
+<!-- RESULTS -->
+<div class="sec" id="sec-res">
+  <div class="r2">
+    <div class="card"><div class="ch"><div class="ct"><i class="fa fa-gamepad"></i> Completed Matches</div></div><div id="rML" style="max-height:500px;overflow-y:auto;padding:11px"></div></div>
+    <div class="card"><div class="ch"><div class="ct"><i class="fa fa-medal"></i> Publish Result</div></div><div id="rPA" class="cb"><div class="emp"><i class="fa fa-arrow-left"></i><p>Select a match</p></div></div></div>
+  </div>
+</div>
+
+<!-- DEPOSITS -->
+<div class="sec" id="sec-dep">
+  <div class="tabs"><div class="tab act" onclick="swDep('pending')">Pending</div><div class="tab" onclick="swDep('approved')">Approved</div><div class="tab" onclick="swDep('rejected')">Rejected</div><div class="tab" onclick="swDep('all')">All</div></div>
+  <div class="tw"><table><thead><tr><th>User</th><th>Amount</th><th>Method</th><th>UTR</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="depBody"></tbody></table></div>
+</div>
+
+<!-- WITHDRAWALS -->
+<div class="sec" id="sec-wd">
+  <div class="tabs"><div class="tab act" onclick="swWd('pending')">Pending</div><div class="tab" onclick="swWd('approved')">Approved</div><div class="tab" onclick="swWd('rejected')">Rejected</div><div class="tab" onclick="swWd('all')">All</div></div>
+  <div class="tw"><table><thead><tr><th>User</th><th>Amount</th><th>Type</th><th>Account/Email</th><th>IFSC/Bank</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="wdBody"></tbody></table></div>
+</div>
+
+<!-- REDEEM CODES -->
+<div class="sec" id="sec-redeem">
+  <div class="ab">
+    <div style="font-size:14px;font-weight:700;color:var(--t)">🎁 Manage Redeem Codes</div>
+    <button class="btn btn-pu" onclick="openRedeemMo()"><i class="fa fa-plus"></i> Create Code</button>
+  </div>
+  <div id="redeemList"><div class="ld"><div class="sp"></div></div></div>
+</div>
+
+<!-- USERS -->
+<div class="sec" id="sec-users">
+  <div class="ab"><div class="si-w"><i class="fa fa-search"></i><input type="text" id="uSrch" placeholder="Search..." oninput="filtU()"></div></div>
+  <div class="tw"><table><thead><tr><th>Avatar</th><th>Username</th><th>Email</th><th>Phone</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead><tbody id="uBody"></tbody></table></div>
+</div>
+
+<!-- MESSAGES -->
+<div class="sec" id="sec-msgs">
+  <div class="card" id="muPanel">
+    <div class="ch"><div class="ct"><i class="fa fa-users"></i> Users</div><span class="auto-msg-badge"><i class="fa fa-robot"></i> Auto Messages ON</span></div>
+    <div style="padding:9px"><div class="si-w" style="max-width:100%"><i class="fa fa-search"></i><input type="text" id="muSrch" placeholder="Search user..." oninput="filtMU()"></div></div>
+    <div id="muList" style="min-height:180px;max-height:65vh;overflow-y:auto;padding:0 9px 9px"></div>
+  </div>
+  <div class="card" id="mcPanel" style="display:none">
+    <div class="ch">
+      <button class="btn btn-g btn-sm" onclick="showMUList()"><i class="fa fa-arrow-left"></i> Back</button>
+      <div class="ct" style="margin-left:9px"><i class="fa fa-comment"></i> <span id="mcName">Chat</span></div>
+    </div>
+    <div class="mc-w">
+      <div id="mc" class="mc"></div>
+      <div class="ms-r">
+        <input class="ms-i" type="text" id="aMsg" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendAMsg()">
+        <button class="btn btn-p" onclick="sendAMsg()"><i class="fa fa-paper-plane"></i> Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="sec" id="sec-notif">
+  <div class="r2">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="ch"><div class="ct"><i class="fa fa-paper-plane"></i> Send Notification to All</div></div>
+        <div class="cb">
+          <div class="fg"><label>Title</label><input type="text" id="nTitle" placeholder="Notification title..."></div>
+          <div class="fg"><label>Message</label><textarea id="nTxt" placeholder="Notification message for all users..."></textarea></div>
+          <button class="btn btn-p" onclick="sendNotif()"><i class="fa fa-paper-plane"></i> Send to All Users</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct"><i class="fa fa-user"></i> Send to Specific User</div></div>
+        <div class="cb">
+          <div class="fg"><label>Select User</label>
+            <select id="notifUser" style="width:100%;padding:9px 12px;background:var(--bg);border:1.5px solid var(--br);border-radius:9px;color:var(--t);font-size:13px;outline:none">
+              <option value="">Select user...</option>
+            </select>
+          </div>
+          <div class="fg"><label>Message</label><input type="text" id="nUserTxt" placeholder="Message for this user..."></div>
+          <button class="btn btn-s" onclick="sendUserNotif()"><i class="fa fa-paper-plane"></i> Send to User</button>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct"><i class="fa fa-list"></i> Sent Notifications</div><button class="btn btn-g btn-sm" onclick="clearNotifs()"><i class="fa fa-trash"></i> Clear All</button></div><div id="nList" style="padding:11px;max-height:500px;overflow-y:auto"></div></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="sec" id="sec-set">
+  <div class="sg">
+    <div class="sc"><div class="sc-t"><i class="fa fa-paint-brush"></i> Branding</div>
+      <div class="fg"><label>App Name</label><input type="text" id="s-name" placeholder="Bharat Battle"></div>
+      <div class="fg"><label>Logo URL</label><input type="url" id="s-logo" placeholder="https://..." oninput="prvImg('s-logo','s-lp')"><img id="s-lp" class="ip" src="" alt=""></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('brand')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc"><div class="sc-t"><i class="fa fa-qrcode"></i> Payment</div>
+      <div class="fg"><label>QR Image URL</label><input type="url" id="s-qr" placeholder="https://..." oninput="prvImg('s-qr','s-qp')"><img id="s-qp" class="ip" src="" alt=""></div>
+      <div class="fg"><label>UPI ID</label><input type="text" id="s-upi" placeholder="name@upi"></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('pay')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc"><div class="sc-t"><i class="fa fa-arrow-down"></i> Deposit Limits</div>
+      <div class="fg2"><div class="fg"><label>Min (₹)</label><input type="number" id="s-dmin" placeholder="20"></div><div class="fg"><label>Max (₹)</label><input type="number" id="s-dmax" placeholder="10000"></div></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('dlim')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc"><div class="sc-t"><i class="fa fa-arrow-up"></i> Withdraw Limits</div>
+      <div class="fg2"><div class="fg"><label>Min (₹)</label><input type="number" id="s-wmin" placeholder="100"></div><div class="fg"><label>Max (₹)</label><input type="number" id="s-wmax" placeholder="5000"></div></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('wlim')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc" style="grid-column:1/-1"><div class="sc-t"><i class="fa fa-gift"></i> Bonus System</div>
+      <div class="fg3"><div class="fg"><label>Min Deposit for Bonus (₹)</label><input type="number" id="s-bth" placeholder="100"></div><div class="fg"><label>Bonus Amount</label><input type="number" id="s-bam" placeholder="10"></div><div class="fg"><label>Type</label><select id="s-bty"><option value="percent">Percent (%)</option><option value="fixed">Fixed (₹)</option></select></div></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('bonus')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc"><div class="sc-t"><i class="fa fa-users"></i> Referral</div>
+      <div class="fg2"><div class="fg"><label>Signup Bonus (₹)</label><input type="number" id="s-rb" placeholder="10"></div><div class="fg"><label>Commission (%)</label><input type="number" id="s-rc" placeholder="5"></div></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('ref')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc"><div class="sc-t"><i class="fa fa-headset"></i> Support Links</div>
+      <div class="fg"><label>WhatsApp Link</label><input type="url" id="s-wa" placeholder="https://wa.me/..."></div>
+      <div class="fg"><label>Telegram Link</label><input type="url" id="s-tg" placeholder="https://t.me/..."></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('sup')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc"><div class="sc-t"><i class="fa fa-tools"></i> Maintenance</div>
+      <div class="tgl-w"><div><div class="tgl-l">Enable Maintenance</div><div class="tgl-s">App shows maintenance screen</div></div><div class="tgl" id="tglM" onclick="togS('maint')"></div></div>
+      <div class="fg"><label>Title</label><input type="text" id="s-mt" placeholder="Under Maintenance"></div>
+      <div class="fg"><label>Message</label><input type="text" id="s-mm" placeholder="Back soon!"></div>
+      <div class="fg"><label>Expected Time</label><input type="text" id="s-met" placeholder="2 hours"></div>
+      <button class="btn btn-w btn-sm" onclick="saveS('maint')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc"><div class="sc-t"><i class="fa fa-mobile-alt"></i> Force Update</div>
+      <div class="tgl-w"><div><div class="tgl-l">Force Update</div><div class="tgl-s">Users must update</div></div><div class="tgl" id="tglU" onclick="togS('upd')"></div></div>
+      <div class="fg"><label>Title</label><input type="text" id="s-ut" placeholder="Update Available!"></div>
+      <div class="fg"><label>Message</label><input type="text" id="s-um" placeholder="Please update"></div>
+      <div class="fg"><label>APK Link</label><input type="url" id="s-ul" placeholder="https://..."></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('upd')"><i class="fa fa-save"></i> Save</button></div>
+    <div class="sc" style="grid-column:1/-1"><div class="sc-t"><i class="fa fa-images"></i> Slider Images</div>
+      <div id="slList"></div>
+      <div style="display:flex;gap:9px;margin-top:7px"><button class="btn btn-g btn-sm" onclick="addSl()"><i class="fa fa-plus"></i> Add Slide</button><button class="btn btn-p btn-sm" onclick="saveSl()"><i class="fa fa-save"></i> Save</button></div></div>
+    <div class="sc" style="grid-column:1/-1"><div class="sc-t"><i class="fa fa-user-circle"></i> Default Avatars</div>
+      <div id="avList"></div>
+      <div style="display:flex;gap:9px;margin-top:7px"><button class="btn btn-g btn-sm" onclick="addAv()"><i class="fa fa-plus"></i> Add Avatar</button><button class="btn btn-p btn-sm" onclick="saveAv()"><i class="fa fa-save"></i> Save</button></div></div>
+    <div class="sc" style="grid-column:1/-1"><div class="sc-t"><i class="fa fa-file-alt"></i> Terms & Policy</div>
+      <div class="fg"><textarea id="s-pol" style="min-height:120px" placeholder="Terms and conditions..."></textarea></div>
+      <button class="btn btn-p btn-sm" onclick="saveS('pol')"><i class="fa fa-save"></i> Save</button></div>
+  </div>
+</div>
+
+    </div></div></div>
+
+<!-- MODALS -->
+<div class="mo" id="moT"><div class="md">
+  <div class="mh"><div class="mt" id="moTT">New Tournament</div><div class="mx" onclick="closeMo('moT')"><i class="fa fa-times"></i></div></div>
+  <div class="mb">
+    <div class="fg"><label>Title *</label><input type="text" id="t-ti" placeholder="Tournament name"></div>
+    <div class="fg"><label>Image URL</label><input type="url" id="t-im" placeholder="https://..." oninput="prvImg('t-im','t-ip')"><img id="t-ip" class="ip" src="" alt=""></div>
+  </div>
+  <div class="mf"><button class="btn btn-g" onclick="closeMo('moT')">Cancel</button><button class="btn btn-p" onclick="saveT()"><i class="fa fa-save"></i> Save</button></div>
+</div></div>
+
+<div class="mo" id="moM"><div class="md" style="max-width:660px">
+  <div class="mh"><div class="mt" id="moMT">New Match</div><div class="mx" onclick="closeMo('moM')"><i class="fa fa-times"></i></div></div>
+  <div class="mb">
+    <div class="fg"><label>Title *</label><input type="text" id="m-ti" placeholder="Match name"></div>
+    <div class="fg"><label>Image URL</label><input type="url" id="m-im" placeholder="https://..." oninput="prvImg('m-im','m-ip')"><img id="m-ip" class="ip" src="" alt=""></div>
+    <div class="fg"><label>Tournament *</label><select id="m-to"><option value="">Select tournament</option></select></div>
+    <div class="fg2">
+      <div class="fg"><label>Mode</label><select id="m-mo"><option>Solo</option><option>Duo</option><option selected>Squad</option></select></div>
+      <div class="fg"><label>Map</label><input type="text" id="m-ma" placeholder="Bermuda..."></div>
+    </div>
+    <div class="fg3">
+      <div class="fg"><label>Entry Fee (₹)</label><input type="number" id="m-ef" placeholder="0"></div>
+      <div class="fg"><label>Prize Pool (₹)</label><input type="number" id="m-pp" placeholder="0"></div>
+      <div class="fg"><label>Per Kill (₹)</label><input type="number" id="m-pk" placeholder="0"></div>
+    </div>
+    <div class="fg2">
+      <div class="fg"><label>Total Slots</label><input type="number" id="m-sl" placeholder="100"></div>
+      <div class="fg"><label>Status</label><select id="m-st"><option value="upcoming">Upcoming</option><option value="ongoing">Ongoing</option><option value="completed">Completed</option></select></div>
+    </div>
+    <div class="fg2">
+      <div class="fg"><label>Date</label><input type="date" id="m-da"></div>
+      <div class="fg"><label>Time</label><input type="time" id="m-ti2"></div>
+    </div>
+    <div style="background:rgba(16,185,129,.06);border:1.5px solid rgba(16,185,129,.2);border-radius:9px;padding:13px;margin-bottom:11px">
+      <div style="font-size:10px;font-weight:800;color:var(--s);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px"><i class="fa fa-door-open"></i> Room Details</div>
+      <div class="fg2"><div class="fg" style="margin-bottom:0"><label>Room ID</label><input type="text" id="m-ri" placeholder="Room ID"></div><div class="fg" style="margin-bottom:0"><label>Room Password</label><input type="text" id="m-rp" placeholder="Password"></div></div>
+    </div>
+    <div style="background:rgba(239,68,68,.05);border:1.5px solid rgba(239,68,68,.2);border-radius:9px;padding:13px;margin-bottom:11px">
+      <div style="font-size:10px;font-weight:800;color:var(--d);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px"><i class="fa fa-circle" style="animation:pulse 1s infinite"></i> Live Link</div>
+      <div class="fg" style="margin-bottom:0"><label>YouTube / Live URL</label><input type="url" id="m-ll" placeholder="https://youtube.com/live/..."></div>
+    </div>
+    <div class="fg"><label>Join Password (optional)</label><input type="text" id="m-jp" placeholder="Match join password"></div>
+    <div class="fg"><label>Rules</label><textarea id="m-ru" placeholder="Match rules..."></textarea></div>
+    <div class="fg"><label>Prize Details</label><textarea id="m-pd" placeholder="1st: ₹500, 2nd: ₹300..."></textarea></div>
+  </div>
+  <div class="mf"><button class="btn btn-g" onclick="closeMo('moM')">Cancel</button><button class="btn btn-p" onclick="saveM()"><i class="fa fa-save"></i> Save Match</button></div>
+</div></div>
+
+<div class="mo" id="moU"><div class="md">
+  <div class="mh"><div class="mt">User Details</div><div class="mx" onclick="closeMo('moU')"><i class="fa fa-times"></i></div></div>
+  <div class="mb">
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:16px;padding:13px;background:var(--bg);border-radius:9px;border:1.5px solid var(--br)">
+      <img id="u-av" src="" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--br);" onerror="this.src='https://via.placeholder.com/50'">
+      <div><div id="u-nm" style="font-size:14px;font-weight:800;color:var(--t)"></div><div id="u-em" style="font-size:11px;color:var(--t3);margin-top:1px"></div><div id="u-ph" style="font-size:11px;color:var(--t3)"></div></div>
+      <div id="u-bs" style="margin-left:auto"></div>
+    </div>
+    <div class="fg3"><div class="fg"><label>Deposit (₹)</label><input type="number" id="u-dep"></div><div class="fg"><label>Winning (₹)</label><input type="number" id="u-win"></div><div class="fg"><label>Bonus (₹)</label><input type="number" id="u-bon"></div></div>
+    <div style="display:flex;gap:9px;margin-top:3px;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="saveUW()"><i class="fa fa-save"></i> Update Wallet</button>
+      <button class="btn btn-g" id="u-bb" onclick="togBan()"></button>
+      <button class="btn btn-s btn-sm" onclick="openMsgUser()"><i class="fa fa-comment"></i> Message User</button>
+    </div>
+    <div id="u-bsec" style="margin-top:13px;display:none">
+      <div class="fg"><label>Ban Reason *</label><input type="text" id="u-br" placeholder="Reason for ban..."></div>
+      <button class="btn btn-d" onclick="doBan()"><i class="fa fa-ban"></i> Confirm Ban</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="mo" id="moBan"><div class="md" style="max-width:400px">
+  <div class="mh"><div class="mt">Ban User</div><div class="mx" onclick="closeMo('moBan')"><i class="fa fa-times"></i></div></div>
+  <div class="mb">
+    <p style="color:var(--t2);font-size:13px;margin-bottom:13px">Banning <strong id="banUN"></strong></p>
+    <div class="fg"><label>Reason *</label><input type="text" id="banR" placeholder="e.g. Cheating..."></div>
+  </div>
+  <div class="mf"><button class="btn btn-g" onclick="closeMo('moBan')">Cancel</button><button class="btn btn-d" onclick="execBan()"><i class="fa fa-ban"></i> Ban User</button></div>
+</div></div>
+
+<!-- REDEEM CODE MODAL -->
+<div class="mo" id="moRedeem"><div class="md" style="max-width:480px">
+  <div class="mh"><div class="mt" id="moRedeemT">Create Redeem Code</div><div class="mx" onclick="closeMo('moRedeem')"><i class="fa fa-times"></i></div></div>
+  <div class="mb">
+    <div class="fg">
+      <label>Code *</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="rc-code" placeholder="e.g. FIRE100" style="text-transform:uppercase;font-weight:800;letter-spacing:2px">
+        <button class="btn btn-g btn-sm" onclick="genCode()" style="flex-shrink:0"><i class="fa fa-random"></i> Generate</button>
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="fg"><label>Amount (₹) *</label><input type="number" id="rc-amt" placeholder="100"></div>
+      <div class="fg"><label>Wallet Type</label>
+        <select id="rc-wtype">
+          <option value="bonus">Bonus Wallet</option>
+          <option value="deposit">Deposit Wallet</option>
+          <option value="winning">Winning Wallet</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="fg"><label>Max Claims (0=unlimited)</label><input type="number" id="rc-max" placeholder="0"></div>
+      <div class="fg"><label>Expires In (days, 0=never)</label><input type="number" id="rc-exp" placeholder="0"></div>
+    </div>
+    <div class="tgl-w">
+      <div><div class="tgl-l">Active</div><div class="tgl-s">Code can be claimed</div></div>
+      <div class="tgl on" id="tglRC" onclick="this.classList.toggle('on')"></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn btn-g" onclick="closeMo('moRedeem')">Cancel</button><button class="btn btn-pu" onclick="saveRedeemCode()"><i class="fa fa-save"></i> Create Code</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+const ADMIN='admin@gmail.com';
+const FC={apiKey:"AIzaSyDxTnSXx0fNFlZuIrY4N6d38X-FVQzjAXg",authDomain:"bharat-battle-a4fcd.firebaseapp.com",databaseURL:"https://bharat-battle-a4fcd-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"bharat-battle-a4fcd",storageBucket:"bharat-battle-a4fcd.firebasestorage.app",messagingSenderId:"751981435553",appId:"1:751981435553:web:c1e2fc999990ae22332ee0"};
+firebase.initializeApp(FC);
+const auth=firebase.auth(),db=firebase.database();
+let curAdmin=null,cfg={},allT={},allM={},editTid=null,editMid=null,selRM=null,selRU=null,curUM=null,depTab='pending',wdTab='pending',allU={},allDep={},allWd={},curMsgUid=null,allMU={},togState={maint:false,upd:false};
+
+function toast(msg,t='in'){const el=document.getElementById('toast');el.innerHTML='<i class="fa fa-'+(t==='ok'?'check-circle':t==='er'?'times-circle':'info-circle')+'"></i>'+msg;el.className='toast on '+t;clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),3200);}
+function fd(ts){if(!ts)return '-';return new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+new Date(ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
+function fm(n){return '₹'+(parseFloat(n)||0).toFixed(2);}
+function openMo(id){document.getElementById(id).classList.add('on');}
+function closeMo(id){document.getElementById(id).classList.remove('on');}
+function prvImg(iid,pid){const u=document.getElementById(iid).value.trim();const img=document.getElementById(pid);if(u){img.src=u;img.classList.add('on');}else img.classList.remove('on');}
+function toggleSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('sbBD').classList.toggle('on');}
+
+/* ═══ SEND MESSAGE TO USER ═══ */
+async function sendMsgToUser(uid,text,type='admin'){
+  if(!uid||!text)return;
+  const key=db.ref('messages/'+uid).push().key;
+  await db.ref('messages/'+uid+'/'+key).set({
+    text,sender:'admin',ts:Date.now(),
+    readByAdmin:true,readByUser:false,type
+  });
+}
+
+/* ═══ AUTO MESSAGE ON DEPOSIT/WITHDRAW ═══ */
+async function sendAutoMsg(uid,text){
+  await sendMsgToUser(uid,text,'auto');
+}
+
+const authTimeout=setTimeout(()=>{
+  document.getElementById('ldr').classList.add('hide');
+  document.getElementById('ls').style.display='flex';
+},5000);
+
+auth.onAuthStateChanged(async u=>{
+  clearTimeout(authTimeout);
+  document.getElementById('ldr').classList.add('hide');
+  if(u){
+    if(u.email!==ADMIN){toast('Access denied','er');auth.signOut();document.getElementById('ls').style.display='flex';return;}
+    curAdmin=u;
+    document.getElementById('ls').style.display='none';
+    document.getElementById('app').style.display='flex';
+    document.getElementById('mobT').style.display='flex';
+    document.getElementById('aInit').textContent=u.email[0].toUpperCase();
+    document.getElementById('aEmail2').textContent=u.email;
+    init();
+  }else{
+    document.getElementById('ls').style.display='flex';
+    document.getElementById('app').style.display='none';
+  }
+});
+
+async function doLogin(){
+  const e=document.getElementById('aEmail').value.trim(),p=document.getElementById('aPass').value;
+  if(!e||!p){toast('Enter credentials','er');return;}
+  const btn=document.querySelector('#ls .btn-or');
+  btn.innerHTML='<i class="fa fa-spinner fa-spin"></i> Logging in...';btn.disabled=true;
+  try{
+    const ps=document.getElementById('remMe').checked?firebase.auth.Auth.Persistence.LOCAL:firebase.auth.Auth.Persistence.SESSION;
+    await auth.setPersistence(ps);
+    await auth.signInWithEmailAndPassword(e,p);
+  }catch(err){
+    btn.innerHTML='<i class="fa fa-sign-in-alt"></i> Login';btn.disabled=false;
+    toast(err.code==='auth/wrong-password'?'Wrong password':err.code==='auth/user-not-found'?'Admin not found':err.message,'er');
+  }
+}
+function doLogout(){if(confirm('Logout?'))auth.signOut();}
+
+function init(){
+  loadCfg();loadDash();loadTournaments();loadMatches();
+  setupBadges();loadUsers();loadDep('pending');loadWd('pending');
+  loadRM();loadNotifList();loadMsgUsers();loadRedeemList();
+  loadNotifUserDropdown();
+  goSec(localStorage.getItem('adSec')||'dash',true);
+}
+
+function goSec(n,skip=false){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('act'));
+  document.getElementById('sec-'+n)?.classList.add('act');
+  document.querySelectorAll('.nav-i').forEach(i=>{i.classList.remove('act');if(i.getAttribute('onclick')?.includes("'"+n+"'"))i.classList.add('act');});
+  const titles={dash:'Dashboard',tourn:'Tournaments',match:'Matches',res:'Results',dep:'Deposits',wd:'Withdrawals',users:'Users',msgs:'Messages',notif:'Notifications',set:'Settings',redeem:'Redeem Codes'};
+  document.getElementById('tbTitle').textContent=titles[n]||n;
+  if(!skip)localStorage.setItem('adSec',n);
+  document.getElementById('sb').classList.remove('open');document.getElementById('sbBD').classList.remove('on');
+}
+
+function setupBadges(){
+  db.ref('deposits').on('value',s=>{let c=0;if(s.exists())Object.values(s.val()).forEach(d=>{if(d.status==='pending')c++;});const b=document.getElementById('depBdg');b.textContent=c;b.classList.toggle('on',c>0);});
+  db.ref('withdrawals').on('value',s=>{let c=0;if(s.exists())Object.values(s.val()).forEach(w=>{if(w.status==='pending')c++;});const b=document.getElementById('wdBdg');b.textContent=c;b.classList.toggle('on',c>0);});
+  db.ref('messages').on('value',s=>{let u=0;if(s.exists())Object.values(s.val()).forEach(ms=>Object.values(ms).forEach(m=>{if(m.sender==='user'&&!m.readByAdmin)u++;}));const b=document.getElementById('msgBdg');b.textContent=u;b.classList.toggle('on',u>0);});
+}
+
+async function loadDash(){
+  // Set defaults immediately - no loading stuck
+  document.getElementById('dsU').textContent='0';
+  document.getElementById('tbU').textContent='0';
+  document.getElementById('dsD').textContent='₹0';
+  document.getElementById('tbD').textContent='₹0';
+  document.getElementById('dsT').textContent='0';
+  document.getElementById('dsM').textContent='0';
+  document.getElementById('dDep').innerHTML='<div class="emp" style="padding:16px"><i class="fa fa-check-circle" style="color:var(--s)"></i><p>No pending deposits</p></div>';
+  document.getElementById('dWd').innerHTML='<div class="emp" style="padding:16px"><i class="fa fa-check-circle" style="color:var(--s)"></i><p>No pending withdrawals</p></div>';
+
+  try{const s=await db.ref('users').once('value');const c=s.exists()?Object.keys(s.val()).length:0;document.getElementById('dsU').textContent=c;document.getElementById('tbU').textContent=c;}catch(e){}
+  try{const s=await db.ref('deposits').once('value');let t=0;if(s.exists())Object.values(s.val()).forEach(d=>{if(d.status==='approved')t+=parseFloat(d.amount)||0;});document.getElementById('dsD').textContent=fm(t);document.getElementById('tbD').textContent=fm(t);}catch(e){}
+  try{const s=await db.ref('tournaments').once('value');document.getElementById('dsT').textContent=s.exists()?Object.keys(s.val()).length:0;}catch(e){}
+  try{const s=await db.ref('matches').once('value');document.getElementById('dsM').textContent=s.exists()?Object.keys(s.val()).length:0;}catch(e){}
+  try{
+    const s=await db.ref('deposits').once('value');const el=document.getElementById('dDep');
+    const pending=s.exists()?Object.entries(s.val()).filter(([,d])=>d.status==='pending'):[];
+    if(!pending.length){el.innerHTML='<div class="emp" style="padding:16px"><i class="fa fa-check-circle" style="color:var(--s)"></i><p>No pending deposits</p></div>';}
+    else{const t=document.createElement('table');t.style.width='100%';pending.slice(0,5).forEach(([k,d])=>{const tr=document.createElement('tr');tr.innerHTML='<td style="padding:9px 13px;font-weight:700">'+(d.username||'—')+'</td><td style="padding:9px 13px;color:var(--s);font-weight:800">'+fm(d.amount)+'</td><td style="padding:9px 13px"><button class="btn btn-s btn-sm" data-k="'+k+'" onclick="appDep(this.dataset.k)"><i class="fa fa-check"></i></button></td>';t.appendChild(tr);});el.innerHTML='';el.appendChild(t);}
+  }catch(e){document.getElementById('dDep').innerHTML='<div class="emp" style="padding:16px"><i class="fa fa-check-circle" style="color:var(--s)"></i><p>No pending deposits</p></div>';}
+  try{
+    const s=await db.ref('withdrawals').once('value');const el=document.getElementById('dWd');
+    const pending=s.exists()?Object.entries(s.val()).filter(([,w])=>w.status==='pending'):[];
+    if(!pending.length){el.innerHTML='<div class="emp" style="padding:16px"><i class="fa fa-check-circle" style="color:var(--s)"></i><p>No pending withdrawals</p></div>';}
+    else{const t=document.createElement('table');t.style.width='100%';pending.slice(0,5).forEach(([k,w])=>{const tr=document.createElement('tr');tr.innerHTML='<td style="padding:9px 13px;font-weight:700">'+(w.username||'—')+'</td><td style="padding:9px 13px;color:var(--d);font-weight:800">'+fm(w.amount)+'</td><td style="padding:9px 13px"><button class="btn btn-s btn-sm" data-k="'+k+'" onclick="appWd(this.dataset.k)"><i class="fa fa-check"></i></button></td>';t.appendChild(tr);});el.innerHTML='';el.appendChild(t);}
+  }catch(e){document.getElementById('dWd').innerHTML='<div class="emp" style="padding:16px"><i class="fa fa-check-circle" style="color:var(--s)"></i><p>No pending withdrawals</p></div>';}
+}
+
+async function loadCfg(){
+  try{const s=await db.ref('settings').once('value');cfg=s.val()||{};}catch(e){}
+  const c=cfg;
+  if(c.appName){document.getElementById('s-name').value=c.appName;document.getElementById('sbName').textContent=c.appName;}
+  if(c.logoUrl){document.getElementById('s-logo').value=c.logoUrl;prvImg('s-logo','s-lp');}
+  if(c.qrImageUrl){document.getElementById('s-qr').value=c.qrImageUrl;prvImg('s-qr','s-qp');}
+  if(c.upiId)document.getElementById('s-upi').value=c.upiId;
+  if(c.minDeposit)document.getElementById('s-dmin').value=c.minDeposit;
+  if(c.maxDeposit)document.getElementById('s-dmax').value=c.maxDeposit;
+  if(c.minWithdraw)document.getElementById('s-wmin').value=c.minWithdraw;
+  if(c.maxWithdraw)document.getElementById('s-wmax').value=c.maxWithdraw;
+  if(c.bonusThreshold)document.getElementById('s-bth').value=c.bonusThreshold;
+  if(c.bonusAmount)document.getElementById('s-bam').value=c.bonusAmount;
+  if(c.bonusType)document.getElementById('s-bty').value=c.bonusType;
+  if(c.referralSignupBonus)document.getElementById('s-rb').value=c.referralSignupBonus;
+  if(c.referralCommission)document.getElementById('s-rc').value=c.referralCommission;
+  if(c.policyText)document.getElementById('s-pol').value=c.policyText;
+  const sup=c.support||{};
+  if(sup.whatsapp)document.getElementById('s-wa').value=sup.whatsapp;
+  if(sup.telegram)document.getElementById('s-tg').value=sup.telegram;
+  const m=c.maintenance||{};togState.maint=!!m.enabled;if(m.enabled)document.getElementById('tglM').classList.add('on');
+  if(m.title)document.getElementById('s-mt').value=m.title;if(m.message)document.getElementById('s-mm').value=m.message;if(m.expectedTime)document.getElementById('s-met').value=m.expectedTime;
+  const u=c.update||{};togState.upd=!!u.forceUpdate;if(u.forceUpdate)document.getElementById('tglU').classList.add('on');
+  if(u.title)document.getElementById('s-ut').value=u.title;if(u.message)document.getElementById('s-um').value=u.message;if(u.updateUrl)document.getElementById('s-ul').value=u.updateUrl;
+  loadSlList();loadAvList();
+}
+
+function togS(k){togState[k]=!togState[k];document.getElementById(k==='maint'?'tglM':'tglU').classList.toggle('on',togState[k]);}
+
+async function saveS(t){
+  try{
+    if(t==='brand'){const n=document.getElementById('s-name').value.trim()||'Bharat Battle';await db.ref('settings').update({appName:n,logoUrl:document.getElementById('s-logo').value.trim()});document.getElementById('sbName').textContent=n;}
+    else if(t==='pay')await db.ref('settings').update({qrImageUrl:document.getElementById('s-qr').value.trim(),upiId:document.getElementById('s-upi').value.trim()});
+    else if(t==='dlim')await db.ref('settings').update({minDeposit:parseFloat(document.getElementById('s-dmin').value)||20,maxDeposit:parseFloat(document.getElementById('s-dmax').value)||10000});
+    else if(t==='wlim')await db.ref('settings').update({minWithdraw:parseFloat(document.getElementById('s-wmin').value)||100,maxWithdraw:parseFloat(document.getElementById('s-wmax').value)||5000});
+    else if(t==='bonus')await db.ref('settings').update({bonusThreshold:parseFloat(document.getElementById('s-bth').value)||0,bonusAmount:parseFloat(document.getElementById('s-bam').value)||0,bonusType:document.getElementById('s-bty').value});
+    else if(t==='ref')await db.ref('settings').update({referralSignupBonus:parseFloat(document.getElementById('s-rb').value)||0,referralCommission:parseFloat(document.getElementById('s-rc').value)||0});
+    else if(t==='pol')await db.ref('settings').update({policyText:document.getElementById('s-pol').value.trim()});
+    else if(t==='sup')await db.ref('settings/support').set({whatsapp:document.getElementById('s-wa').value.trim(),telegram:document.getElementById('s-tg').value.trim()});
+    else if(t==='maint')await db.ref('settings/maintenance').set({enabled:togState.maint,title:document.getElementById('s-mt').value.trim()||'Under Maintenance',message:document.getElementById('s-mm').value.trim()||'Back soon!',expectedTime:document.getElementById('s-met').value.trim()});
+    else if(t==='upd')await db.ref('settings/update').set({forceUpdate:togState.upd,title:document.getElementById('s-ut').value.trim()||'Update Available',message:document.getElementById('s-um').value.trim()||'Please update',updateUrl:document.getElementById('s-ul').value.trim()});
+    toast('Saved!','ok');
+  }catch(e){toast('Failed: '+e.message,'er');}
+}
+
+function loadSlList(){const el=document.getElementById('slList');const imgs=cfg.sliderImages?Object.entries(cfg.sliderImages):[];el.innerHTML='';imgs.forEach(([k,item])=>{const url=typeof item==='object'?(item.imageUrl||''):item||'';const link=typeof item==='object'?(item.link||''):'';const d=document.createElement('div');d.style.cssText='background:var(--bg);border:1.5px solid var(--br);border-radius:9px;padding:11px;margin-bottom:9px';d.innerHTML='<div style="display:flex;gap:7px;align-items:center;margin-bottom:5px"><input type="url" placeholder="Image URL *" value="'+url+'" style="flex:1"><img src="'+url+'" class="url-th" onerror="this.style.opacity=.3"><div class="url-d" onclick="this.closest(\'div[style]\').remove()"><i class="fa fa-trash"></i></div></div><input type="url" placeholder="Click Link (optional)" value="'+link+'" style="width:100%;background:var(--c);border:1.5px solid var(--br);border-radius:7px;padding:7px 11px;font-size:12px;color:var(--t);outline:none">';el.appendChild(d);});}
+function addSl(){const d=document.createElement('div');d.style.cssText='background:var(--bg);border:1.5px solid var(--br);border-radius:9px;padding:11px;margin-bottom:9px';d.innerHTML='<div style="display:flex;gap:7px;align-items:center;margin-bottom:5px"><input type="url" placeholder="Image URL *" style="flex:1"><img src="" class="url-th" onerror="this.style.opacity=.3"><div class="url-d" onclick="this.closest(\'div[style]\').remove()"><i class="fa fa-trash"></i></div></div><input type="url" placeholder="Click Link (optional)" style="width:100%;background:var(--c);border:1.5px solid var(--br);border-radius:7px;padding:7px 11px;font-size:12px;color:var(--t);outline:none">';document.getElementById('slList').appendChild(d);}
+async function saveSl(){const rows=document.querySelectorAll('#slList > div');const data={};rows.forEach((r,i)=>{const ins=r.querySelectorAll('input[type=url]');const img=ins[0]?.value.trim();const lnk=ins[1]?.value.trim();if(img)data['sl'+i]=lnk?{imageUrl:img,link:lnk}:img;});await db.ref('settings/sliderImages').set(data);toast('Slider saved!','ok');}
+function loadAvList(){const el=document.getElementById('avList');const imgs=cfg.defaultAvatars?Object.values(cfg.defaultAvatars):[];el.innerHTML='';imgs.forEach(u=>{const d=document.createElement('div');d.className='url-r';d.innerHTML='<input type="url" value="'+u+'" placeholder="https://..."><img class="url-th" src="'+u+'" style="border-radius:50%" onerror="this.style.opacity=.3"><div class="url-d" onclick="this.parentElement.remove()"><i class="fa fa-trash"></i></div>';el.appendChild(d);});}
+function addAv(){const d=document.createElement('div');d.className='url-r';d.innerHTML='<input type="url" placeholder="https://..."><img class="url-th" src="" style="border-radius:50%" onerror="this.style.opacity=.3"><div class="url-d" onclick="this.parentElement.remove()"><i class="fa fa-trash"></i></div>';document.getElementById('avList').appendChild(d);}
+async function saveAv(){const ins=document.querySelectorAll('#avList input');const u={};ins.forEach((i,idx)=>{if(i.value.trim())u['av'+idx]=i.value.trim();});await db.ref('settings/defaultAvatars').set(u);toast('Avatars saved!','ok');}
+
+/* ═══ TOURNAMENTS ═══ */
+function loadTournaments(){db.ref('tournaments').on('value',s=>{allT=s.val()||{};renderT();updTDrops();});}
+function renderT(f=''){
+  const el=document.getElementById('tBody');el.innerHTML='';
+  const entries=Object.entries(allT).filter(([,t])=>!f||(t.title||'').toLowerCase().includes(f));
+  if(!entries.length){el.innerHTML='<tr><td colspan="4"><div class="emp"><i class="fa fa-trophy"></i><p>No tournaments</p></div></td></tr>';return;}
+  entries.forEach(([tid,t])=>{
+    const tr=document.createElement('tr');
+    const mc=Object.values(allM).filter(m=>m.tournamentId===tid).length;
+    tr.innerHTML='<td><img style="width:38px;height:28px;object-fit:cover;border-radius:6px;border:1.5px solid var(--br)" src="'+(t.imageUrl||'')+'" onerror="this.style.display=\'none\'"></td>'+
+      '<td style="font-weight:700">'+(t.title||'—')+'</td>'+
+      '<td><span class="bdg bdg-p">'+mc+' matches</span></td>'+
+      '<td><div style="display:flex;gap:5px">'+
+        '<button class="btn btn-g btn-sm btn-ic" data-id="'+tid+'" onclick="openTM(this.dataset.id)"><i class="fa fa-edit"></i></button>'+
+        '<button class="btn btn-ic btn-sm" style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d)" data-id="'+tid+'" onclick="delT(this.dataset.id)"><i class="fa fa-trash"></i></button>'+
+      '</div></td>';
+    el.appendChild(tr);
+  });
+}
+function filtT(){renderT(document.getElementById('tSrch').value.trim().toLowerCase());}
+function openTM(tid=null){
+  editTid=tid;document.getElementById('moTT').textContent=tid?'Edit Tournament':'New Tournament';
+  if(tid&&allT[tid]){document.getElementById('t-ti').value=allT[tid].title||'';document.getElementById('t-im').value=allT[tid].imageUrl||'';prvImg('t-im','t-ip');}
+  else{document.getElementById('t-ti').value='';document.getElementById('t-im').value='';document.getElementById('t-ip').classList.remove('on');}
+  openMo('moT');
+}
+async function saveT(){const ti=document.getElementById('t-ti').value.trim();if(!ti){toast('Title required','er');return;}await(editTid?db.ref('tournaments/'+editTid):db.ref('tournaments').push()).set({title:ti,imageUrl:document.getElementById('t-im').value.trim()});closeMo('moT');toast('Tournament saved!','ok');}
+async function delT(tid){if(!confirm('Delete?'))return;await db.ref('tournaments/'+tid).remove();toast('Deleted','in');}
+function updTDrops(){const opts='<option value="">All Tournaments</option>'+Object.entries(allT).map(([id,t])=>'<option value="'+id+'">'+t.title+'</option>').join('');['mTF','m-to'].forEach(id=>{const el=document.getElementById(id);if(el){const v=el.value;el.innerHTML=opts;el.value=v;}});}
+
+/* ═══ MATCHES ═══ */
+function loadMatches(){db.ref('matches').on('value',s=>{allM=s.val()||{};renderM();updTDrops();});}
+function renderM(){
+  const el=document.getElementById('mBody');el.innerHTML='';
+  const tf=document.getElementById('mTF').value,sf=document.getElementById('mSF').value;
+  let entries=Object.entries(allM);
+  if(tf)entries=entries.filter(([,m])=>m.tournamentId===tf);
+  if(sf)entries=entries.filter(([,m])=>m.status===sf);
+  if(!entries.length){el.innerHTML='<tr><td colspan="10"><div class="emp"><i class="fa fa-gamepad"></i><p>No matches</p></div></td></tr>';return;}
+  entries.forEach(([mid,m])=>{
+    const tr=document.createElement('tr');
+    const sel=document.createElement('select');
+    sel.style.cssText='background:var(--bg);border:1.5px solid var(--br);border-radius:7px;color:var(--t);font-size:11px;padding:4px 7px;outline:none';
+    sel.dataset.mid=mid;sel.onchange=function(){chgMStatus(this.dataset.mid,this.value);};
+    ['upcoming','ongoing','completed'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;if(m.status===v)o.selected=true;sel.appendChild(o);});
+    tr.innerHTML='<td><img style="width:38px;height:28px;object-fit:cover;border-radius:6px;border:1.5px solid var(--br)" src="'+(m.imageUrl||'')+'" onerror="this.style.display=\'none\'"></td>'+
+      '<td style="font-weight:700;min-width:100px">'+(m.title||'—')+'</td>'+
+      '<td style="font-size:12px;color:var(--t2)">'+(allT[m.tournamentId]?.title||'—')+'</td>'+
+      '<td>'+(m.mode||'—')+'</td>'+
+      '<td style="color:var(--s);font-weight:700">'+(m.entryFee>0?'₹'+m.entryFee:'FREE')+'</td>'+
+      '<td style="color:var(--w);font-weight:700">₹'+(m.prizePool||0)+'</td>'+
+      '<td>'+(parseInt(m.slotsFilled)||0)+'/'+(m.slots||100)+'</td>'+
+      '<td>'+(m.roomId?'<span style="font-size:11px;color:var(--s);font-weight:700;font-family:monospace">'+m.roomId+'</span>':'<span style="color:var(--t3)">—</span>')+'</td>'+
+      '<td></td>'+
+      '<td><div style="display:flex;gap:5px">'+
+        '<button class="btn btn-g btn-sm btn-ic" data-mid="'+mid+'" onclick="openMM(this.dataset.mid)"><i class="fa fa-edit"></i></button>'+
+        '<button class="btn btn-ic btn-sm" style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d)" data-mid="'+mid+'" onclick="delM(this.dataset.mid)"><i class="fa fa-trash"></i></button>'+
+      '</div></td>';
+    tr.cells[8].appendChild(sel);el.appendChild(tr);
+  });
+}
+async function chgMStatus(mid,st){await db.ref('matches/'+mid+'/status').set(st);toast('Updated','ok');}
+function openMM(mid=null){
+  editMid=mid;document.getElementById('moMT').textContent=mid?'Edit Match':'New Match';
+  const flds={ti:'title',im:'imageUrl',ma:'map',ru:'rules',pd:'prizeDetails',jp:'password',ri:'roomId',rp:'roomPassword',ll:'liveLink'};
+  if(mid&&allM[mid]){const m=allM[mid];Object.entries(flds).forEach(([f,k])=>{const el=document.getElementById('m-'+f);if(el)el.value=m[k]||'';});document.getElementById('m-to').value=m.tournamentId||'';document.getElementById('m-mo').value=m.mode||'Squad';document.getElementById('m-ef').value=m.entryFee||0;document.getElementById('m-pp').value=m.prizePool||0;document.getElementById('m-pk').value=m.perKill||0;document.getElementById('m-sl').value=m.slots||100;document.getElementById('m-st').value=m.status||'upcoming';document.getElementById('m-da').value=m.date||'';document.getElementById('m-ti2').value=m.time||'';prvImg('m-im','m-ip');}
+  else{Object.keys(flds).forEach(f=>{const el=document.getElementById('m-'+f);if(el)el.value='';});document.getElementById('m-ef').value=0;document.getElementById('m-pp').value=0;document.getElementById('m-pk').value=0;document.getElementById('m-sl').value=100;document.getElementById('m-ip').classList.remove('on');}
+  openMo('moM');
+}
+async function saveM(){
+  const tid=document.getElementById('m-to').value;
+  if(!document.getElementById('m-ti').value.trim()||!tid){toast('Title and tournament required','er');return;}
+  const data={title:document.getElementById('m-ti').value.trim(),imageUrl:document.getElementById('m-im').value.trim(),tournamentId:tid,mode:document.getElementById('m-mo').value,map:document.getElementById('m-ma').value.trim(),entryFee:parseFloat(document.getElementById('m-ef').value)||0,prizePool:parseFloat(document.getElementById('m-pp').value)||0,perKill:parseFloat(document.getElementById('m-pk').value)||0,slots:parseInt(document.getElementById('m-sl').value)||100,status:document.getElementById('m-st').value,date:document.getElementById('m-da').value,time:document.getElementById('m-ti2').value,roomId:document.getElementById('m-ri').value.trim(),roomPassword:document.getElementById('m-rp').value.trim(),liveLink:document.getElementById('m-ll').value.trim(),password:document.getElementById('m-jp').value.trim(),rules:document.getElementById('m-ru').value.trim(),prizeDetails:document.getElementById('m-pd').value.trim()};
+  const ref=editMid?db.ref('matches/'+editMid):db.ref('matches').push();
+  if(!editMid)data.slotsFilled=0;
+  await ref.set(data);closeMo('moM');toast('Match saved!','ok');
+}
+async function delM(mid){if(!confirm('Delete?'))return;await db.ref('matches/'+mid).remove();toast('Deleted','in');}
+
+/* ═══ RESULTS ═══ */
+function loadRM(){
+  db.ref('matches').on('value',s=>{
+    const el=document.getElementById('rML');el.innerHTML='';
+    const completedMatches=s.exists()?Object.entries(s.val()).filter(([,m])=>m.status==='completed'):[];
+    if(!completedMatches.length){el.innerHTML='<div class="emp"><i class="fa fa-times-circle"></i><p>No completed matches</p></div>';return;}
+    completedMatches.forEach(([mid,m])=>{
+      const d=document.createElement('div');d.className='ruc'+(selRM===mid?' sel':'');d.dataset.mid=mid;
+      d.onclick=function(){selRM=this.dataset.mid;loadRM();selRPA(this.dataset.mid);};
+      d.innerHTML='<div><div style="font-size:13px;font-weight:700;color:var(--t)">'+(m.title||'—')+'</div><div style="font-size:11px;color:var(--t2);margin-top:2px">'+(allT[m.tournamentId]?.title||'—')+' · '+(m.mode||'—')+'</div></div><span class="bdg bdg-gr">Done</span>';
+      el.appendChild(d);
+    });
+  });
+}
+async function selRPA(mid){
+  const el=document.getElementById('rPA');el.innerHTML='<div class="ld"><div class="sp"></div></div>';
+  const js=await db.ref('joinedMatches').orderByChild('matchId').equalTo(mid).once('value');
+  if(!js.exists()){el.innerHTML='<div class="emp"><i class="fa fa-user-slash"></i><p>No participants</p></div>';return;}
+  const wrap=document.createElement('div');wrap.innerHTML='<p style="font-size:12px;color:var(--t2);margin-bottom:11px;font-weight:600;padding:0 17px">Select participant:</p>';
+  Object.values(js.val()).forEach(p=>{const d=document.createElement('div');d.className='ruc';d.style.cssText='margin:0 17px 7px';d.dataset.uid=p.userId;d.dataset.uname=p.username||'';d.onclick=function(){selRUser(this.dataset.uid,this.dataset.uname,this);};d.innerHTML='<img src="'+(p.avatar||'https://via.placeholder.com/32')+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--br)" onerror="this.src=\'https://via.placeholder.com/32\'"><div><div style="font-size:13px;font-weight:700;color:var(--t)">'+(p.username||'—')+'</div></div>';wrap.appendChild(d);});
+  el.innerHTML='';el.appendChild(wrap);
+}
+function selRUser(uid,uname,el){
+  selRU={uid,uname};document.querySelectorAll('#rPA .ruc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');
+  document.getElementById('rForm')?.remove();
+  const f=document.createElement('div');f.id='rForm';f.style.cssText='margin:13px 17px 17px;padding-top:13px;border-top:1.5px solid var(--br)';
+  f.innerHTML='<p style="font-size:12px;font-weight:700;color:var(--t);margin-bottom:11px">Result for: <span style="color:var(--p)">'+uname+'</span></p>'+
+    '<div class="fg3" style="margin-bottom:11px"><div class="fg"><label>Position</label><input type="number" id="r-pos" placeholder="1" min="1"></div><div class="fg"><label>Kills</label><input type="number" id="r-kil" placeholder="0" min="0"></div><div class="fg"><label>Winning (₹)</label><input type="number" id="r-win" placeholder="0" min="0"></div></div>'+
+    '<button class="btn btn-p" onclick="pubResult()"><i class="fa fa-trophy"></i> Publish Result</button>';
+  document.getElementById('rPA').appendChild(f);
+}
+async function pubResult(){
+  if(!selRM||!selRU){toast('Select match and player','er');return;}
+  const pos=parseInt(document.getElementById('r-pos').value)||1,kills=parseInt(document.getElementById('r-kil').value)||0,winning=parseFloat(document.getElementById('r-win').value)||0;
+  const md=allM[selRM]||{};
+  const rk=db.ref('results').push().key;
+  await db.ref('results/'+rk).set({matchId:selRM,matchTitle:md.title||'Match',userId:selRU.uid,username:selRU.uname,position:pos,kills,winning,ts:Date.now()});
+  if(winning>0){
+    await db.ref('wallets/'+selRU.uid+'/winning').transaction(v=>(v||0)+winning);
+    const tk=db.ref('wallets/'+selRU.uid+'/transactions').push().key;
+    await db.ref('wallets/'+selRU.uid+'/transactions/'+tk).set({type:'winning',label:'Prize: '+md.title,amount:winning,ts:Date.now()});
+    // Auto message to user
+    await sendAutoMsg(selRU.uid,'🏆 Congratulations '+selRU.uname+'! You won ₹'+winning+' in '+md.title+'! Position: #'+pos+', Kills: '+kills);
+  }
+  toast('Result published! ✅','ok');document.getElementById('rForm')?.remove();selRU=null;
+}
+
+/* ═══ DEPOSITS ═══ */
+async function loadDep(st){
+  depTab=st;const el=document.getElementById('depBody');
+  el.innerHTML='<tr><td colspan="7"><div class="ld"><div class="sp"></div></div></td></tr>';
+  const s=await db.ref('deposits').once('value');const all=s.val()||{};
+  allDep=st==='all'?all:Object.fromEntries(Object.entries(all).filter(([,d])=>d.status===st));
+  renderDep();
+}
+function renderDep(){
+  const el=document.getElementById('depBody');el.innerHTML='';
+  const entries=Object.entries(allDep).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+  if(!entries.length){el.innerHTML='<tr><td colspan="7"><div class="emp"><i class="fa fa-inbox"></i><p>No deposits</p></div></td></tr>';return;}
+  entries.forEach(([k,d])=>{
+    const tr=document.createElement('tr');const bg=d.status==='approved'?'bdg-s':d.status==='rejected'?'bdg-d':'bdg-o';
+    tr.innerHTML='<td style="font-weight:700">'+(d.username||'—')+'</td><td style="color:var(--s);font-weight:800">₹'+d.amount+'</td><td>'+(d.method||'—')+'</td><td style="font-size:11px;font-family:monospace">'+(d.utr||'—')+'</td><td><span class="bdg '+bg+'">'+d.status+'</span></td><td style="font-size:11px;color:var(--t2)">'+fd(d.ts)+'</td><td></td>';
+    if(d.status==='pending'){
+      const div=document.createElement('div');div.style.display='flex';div.style.gap='5px';
+      const ab=document.createElement('button');ab.className='btn btn-s btn-sm';ab.dataset.k=k;ab.onclick=function(){appDep(this.dataset.k);};ab.innerHTML='<i class="fa fa-check"></i> Approve';
+      const rb=document.createElement('button');rb.className='btn btn-ic btn-sm';rb.style.cssText='background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d)';rb.dataset.k=k;rb.onclick=function(){rejDep(this.dataset.k);};rb.innerHTML='<i class="fa fa-times"></i>';
+      div.appendChild(ab);div.appendChild(rb);tr.cells[6].appendChild(div);
+    }else tr.cells[6].innerHTML='<span style="color:var(--t3);font-size:12px">Done</span>';
+    el.appendChild(tr);
+  });
+}
+function swDep(t){depTab=t;document.querySelectorAll('#sec-dep .tab').forEach((b,i)=>b.classList.toggle('act',['pending','approved','rejected','all'][i]===t));loadDep(t);}
+
+async function appDep(key){
+  const s=await db.ref('deposits/'+key).once('value');const d=s.val();if(!d)return;
+  await db.ref('deposits/'+key+'/status').set('approved');
+  await db.ref('wallets/'+d.userId+'/deposit').transaction(v=>(v||0)+(parseFloat(d.amount)||0));
+  const tk=db.ref('wallets/'+d.userId+'/transactions').push().key;
+  await db.ref('wallets/'+d.userId+'/transactions/'+tk).set({type:'deposit',label:'Deposit Approved',amount:parseFloat(d.amount)||0,ts:Date.now()});
+  // ✅ AUTO MESSAGE TO USER
+  await sendAutoMsg(d.userId,'✅ Your deposit of ₹'+d.amount+' has been approved! Amount added to your wallet. Happy Gaming! 🎮');
+  // Bonus check
+  try{const th=parseFloat(cfg.bonusThreshold)||0,ba=parseFloat(cfg.bonusAmount)||0;if(th>0&&(parseFloat(d.amount)||0)>=th&&ba>0){let bon=ba;if(cfg.bonusType==='percent')bon=((parseFloat(d.amount)||0)*ba/100);await db.ref('wallets/'+d.userId+'/bonus').transaction(v=>(v||0)+bon);const bk=db.ref('wallets/'+d.userId+'/transactions').push().key;await db.ref('wallets/'+d.userId+'/transactions/'+bk).set({type:'bonus',label:'Deposit Bonus',amount:bon,ts:Date.now()});await sendAutoMsg(d.userId,'🎁 Bonus of ₹'+bon.toFixed(2)+' credited to your account!');}}catch(e){}
+  // Referral commission
+  try{const us=await db.ref('users/'+d.userId+'/referredBy').once('value');if(us.exists()){const ru=us.val(),cm=parseFloat(cfg.referralCommission)||0;if(cm>0){const ca=(parseFloat(d.amount)||0)*cm/100;await db.ref('wallets/'+ru+'/bonus').transaction(v=>(v||0)+ca);const rk=db.ref('referrals/'+ru).push().key;const un=(await db.ref('users/'+d.userId+'/username').once('value')).val()||'User';await db.ref('referrals/'+ru+'/'+rk).set({username:un,uid:d.userId,ts:Date.now(),type:'deposit',amount:ca});}}}catch(e){}
+  toast('Approved & Auto Message Sent! ✅','ok');loadDep(depTab);loadDash();
+}
+
+async function rejDep(key){
+  if(!confirm('Reject?'))return;
+  const s=await db.ref('deposits/'+key).once('value');const d=s.val();
+  await db.ref('deposits/'+key+'/status').set('rejected');
+  // ✅ AUTO MESSAGE TO USER
+  if(d)await sendAutoMsg(d.userId,'❌ Your deposit of ₹'+d.amount+' has been rejected. Please contact support if you believe this is an error.');
+  toast('Rejected','in');loadDep(depTab);
+}
+
+/* ═══ WITHDRAWALS ═══ */
+async function loadWd(st){
+  wdTab=st;const el=document.getElementById('wdBody');
+  el.innerHTML='<tr><td colspan="8"><div class="ld"><div class="sp"></div></div></td></tr>';
+  const s=await db.ref('withdrawals').once('value');const all=s.val()||{};
+  allWd=st==='all'?all:Object.fromEntries(Object.entries(all).filter(([,w])=>w.status===st));
+  renderWd();
+}
+function renderWd(){
+  const el=document.getElementById('wdBody');el.innerHTML='';
+  const entries=Object.entries(allWd).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+  if(!entries.length){el.innerHTML='<tr><td colspan="8"><div class="emp"><i class="fa fa-inbox"></i><p>No withdrawals</p></div></td></tr>';return;}
+  entries.forEach(([k,w])=>{
+    const tr=document.createElement('tr');const bg=w.status==='approved'?'bdg-s':w.status==='rejected'?'bdg-d':'bdg-o';
+    tr.innerHTML='<td style="font-weight:700">'+(w.username||'—')+'</td><td style="color:var(--d);font-weight:800">₹'+w.amount+'</td><td><span class="bdg bdg-p" style="font-size:9px">'+(w.type||'Withdrawal')+'</span></td><td style="font-size:11px;font-family:monospace">'+(w.account||'—')+'</td><td style="font-size:11px;font-family:monospace">'+(w.ifsc||w.bank||'—')+'</td><td><span class="bdg '+bg+'">'+w.status+'</span></td><td style="font-size:11px;color:var(--t2)">'+fd(w.ts)+'</td><td></td>';
+    if(w.status==='pending'){
+      const div=document.createElement('div');div.style.display='flex';div.style.gap='5px';
+      const ab=document.createElement('button');ab.className='btn btn-s btn-sm';ab.dataset.k=k;ab.onclick=function(){appWd(this.dataset.k);};ab.innerHTML='<i class="fa fa-check"></i> Approve';
+      const rb=document.createElement('button');rb.className='btn btn-ic btn-sm';rb.style.cssText='background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d)';rb.dataset.k=k;rb.onclick=function(){rejWd(this.dataset.k);};rb.innerHTML='<i class="fa fa-times"></i>';
+      div.appendChild(ab);div.appendChild(rb);tr.cells[7].appendChild(div);
+    }else tr.cells[7].innerHTML='<span style="color:var(--t3);font-size:12px">Done</span>';
+    el.appendChild(tr);
+  });
+}
+function swWd(t){wdTab=t;document.querySelectorAll('#sec-wd .tab').forEach((b,i)=>b.classList.toggle('act',['pending','approved','rejected','all'][i]===t));loadWd(t);}
+
+async function appWd(key){
+  const s=await db.ref('withdrawals/'+key).once('value');const w=s.val();
+  await db.ref('withdrawals/'+key+'/status').set('approved');
+  // ✅ AUTO MESSAGE TO USER
+  if(w)await sendAutoMsg(w.userId,'✅ Your withdrawal of ₹'+w.amount+' has been approved! Amount will be transferred to your '+w.type+' within 24 hours. 💸');
+  toast('Approved!','ok');loadWd(wdTab);
+}
+
+async function rejWd(key){
+  if(!confirm('Reject? Amount refunded.'))return;
+  const s=await db.ref('withdrawals/'+key).once('value');const w=s.val();if(!w)return;
+  await db.ref('withdrawals/'+key+'/status').set('rejected');
+  await db.ref('wallets/'+w.userId+'/winning').transaction(v=>(v||0)+(parseFloat(w.amount)||0));
+  const tk=db.ref('wallets/'+w.userId+'/transactions').push().key;
+  await db.ref('wallets/'+w.userId+'/transactions/'+tk).set({type:'winning',label:'Withdrawal Refunded',amount:parseFloat(w.amount)||0,ts:Date.now()});
+  // ✅ AUTO MESSAGE TO USER
+  await sendAutoMsg(w.userId,'❌ Your withdrawal of ₹'+w.amount+' has been rejected. Amount has been refunded to your winning wallet. Contact support for help.');
+  toast('Rejected & Refunded','in');loadWd(wdTab);
+}
+
+/* ═══ REDEEM CODES ═══ */
+function genCode(){
+  const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code='FIRE';
+  for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('rc-code').value=code;
+}
+
+function openRedeemMo(){
+  document.getElementById('moRedeemT').textContent='Create Redeem Code';
+  document.getElementById('rc-code').value='';
+  document.getElementById('rc-amt').value='';
+  document.getElementById('rc-max').value='0';
+  document.getElementById('rc-exp').value='0';
+  document.getElementById('rc-wtype').value='bonus';
+  document.getElementById('tglRC').classList.add('on');
+  openMo('moRedeem');
+}
+
+async function saveRedeemCode(){
+  const code=document.getElementById('rc-code').value.trim().toUpperCase();
+  const amt=parseFloat(document.getElementById('rc-amt').value)||0;
+  if(!code){toast('Enter code','er');return;}
+  if(!amt){toast('Enter amount','er');return;}
+  const maxClaims=parseInt(document.getElementById('rc-max').value)||0;
+  const expDays=parseInt(document.getElementById('rc-exp').value)||0;
+  const active=document.getElementById('tglRC').classList.contains('on');
+  const data={code,amount:amt,walletType:document.getElementById('rc-wtype').value,maxClaims,active,claimCount:0,createdAt:Date.now()};
+  if(expDays>0)data.expiresAt=Date.now()+(expDays*24*60*60*1000);
+  await db.ref('redeemCodes/'+code).set(data);
+  closeMo('moRedeem');toast('Redeem code created! 🎁','ok');loadRedeemList();
+}
+
+async function loadRedeemList(){
+  const el=document.getElementById('redeemList');
+  el.innerHTML='<div class="ld"><div class="sp"></div></div>';
+  const s=await db.ref('redeemCodes').once('value');
+  if(!s.exists()){el.innerHTML='<div class="emp"><i class="fa fa-ticket-alt"></i><p>No redeem codes yet</p></div>';return;}
+  const codes=Object.entries(s.val()).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0));
+  el.innerHTML=codes.map(([k,c])=>{
+    const exp=c.expiresAt?'Expires: '+new Date(c.expiresAt).toLocaleDateString('en-IN'):'Never expires';
+    const isExpired=c.expiresAt&&Date.now()>c.expiresAt;
+    return `<div class="rc-card">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px">
+          <span class="rc-code">${k}</span>
+          <span class="rc-badge ${c.active&&!isExpired?'rc-active':'rc-inactive'}">${isExpired?'Expired':c.active?'Active':'Inactive'}</span>
+        </div>
+        <div class="rc-info">💰 ₹${c.amount} → ${c.walletType} wallet &nbsp;|&nbsp; 👥 ${c.claimCount||0}/${c.maxClaims||'∞'} claimed &nbsp;|&nbsp; ⏰ ${exp}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-ic btn-sm" style="background:rgba(16,185,129,.08);border:1.5px solid rgba(16,185,129,.2);color:var(--s)" onclick="toggleRedeemCode('${k}',${!c.active})" title="${c.active?'Deactivate':'Activate'}"><i class="fa fa-${c.active?'pause':'play'}"></i></button>
+        <button class="btn btn-ic btn-sm" style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d)" onclick="delRedeemCode('${k}')"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toggleRedeemCode(code,active){await db.ref('redeemCodes/'+code+'/active').set(active);toast(active?'Code activated!':'Code deactivated!','ok');loadRedeemList();}
+async function delRedeemCode(code){if(!confirm('Delete code '+code+'?'))return;await db.ref('redeemCodes/'+code).remove();toast('Deleted','in');loadRedeemList();}
+
+/* ═══ USERS ═══ */
+function loadUsers(){db.ref('users').on('value',s=>{allU=s.val()||{};renderU();loadNotifUserDropdown();});}
+function renderU(f=''){
+  const el=document.getElementById('uBody');el.innerHTML='';
+  let entries=Object.entries(allU);
+  if(f)entries=entries.filter(([,u])=>(u.username||'').toLowerCase().includes(f)||(u.email||'').toLowerCase().includes(f)||(u.phone||'').includes(f));
+  if(!entries.length){el.innerHTML='<tr><td colspan="7"><div class="emp"><i class="fa fa-user-slash"></i><p>No users</p></div></td></tr>';return;}
+  entries.forEach(([uid,u])=>{
+    const tr=document.createElement('tr');
+    const banBtnDiv=document.createElement('div');banBtnDiv.style.display='flex';banBtnDiv.style.gap='5px';
+    const editB=document.createElement('button');editB.className='btn btn-g btn-sm btn-ic';editB.dataset.uid=uid;editB.onclick=function(){openUM(this.dataset.uid);};editB.innerHTML='<i class="fa fa-edit"></i>';
+    banBtnDiv.appendChild(editB);
+    if(u.banned){const ub=document.createElement('button');ub.className='btn btn-s btn-sm';ub.dataset.uid=uid;ub.onclick=function(){unbanU(this.dataset.uid);};ub.innerHTML='<i class="fa fa-unlock"></i>';banBtnDiv.appendChild(ub);}
+    else{const bb=document.createElement('button');bb.style.cssText='background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d);padding:5px 9px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px';bb.dataset.uid=uid;bb.dataset.un=u.username||'';bb.onclick=function(){openBanMo(this.dataset.uid,this.dataset.un);};bb.innerHTML='<i class="fa fa-ban"></i>';banBtnDiv.appendChild(bb);}
+    tr.innerHTML='<td><img src="'+(u.avatar||'https://via.placeholder.com/32')+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--br)" onerror="this.src=\'https://via.placeholder.com/32\'"></td>'+
+      '<td style="font-weight:700">'+(u.username||'—')+'</td>'+
+      '<td style="font-size:12px;color:var(--t2)">'+(u.email||'—')+'</td>'+
+      '<td style="font-size:12px;font-family:monospace">'+(u.phone||'—')+'</td>'+
+      '<td style="font-size:11px;color:var(--t2)">'+fd(u.createdAt)+'</td>'+
+      '<td>'+(u.banned?'<span class="bdg bdg-d"><i class="fa fa-ban"></i> Banned</span>':'<span class="bdg bdg-s">Active</span>')+'</td>'+
+      '<td></td>';
+    tr.cells[6].appendChild(banBtnDiv);el.appendChild(tr);
+  });
+}
+function filtU(){renderU(document.getElementById('uSrch').value.trim().toLowerCase());}
+
+async function openUM(uid){
+  curUM=uid;const u=allU[uid];if(!u)return;
+  document.getElementById('u-av').src=u.avatar||'https://via.placeholder.com/50';
+  document.getElementById('u-nm').textContent=u.username||'—';
+  document.getElementById('u-em').textContent=u.email||'—';
+  document.getElementById('u-ph').textContent=u.phone||'—';
+  document.getElementById('u-bs').innerHTML=u.banned?'<span class="bdg bdg-d"><i class="fa fa-ban"></i> Banned</span>':'<span class="bdg bdg-s">Active</span>';
+  const ws=await db.ref('wallets/'+uid).once('value');const w=ws.val()||{};
+  document.getElementById('u-dep').value=w.deposit||0;document.getElementById('u-win').value=w.winning||0;document.getElementById('u-bon').value=w.bonus||0;
+  const bb=document.getElementById('u-bb'),bs=document.getElementById('u-bsec');
+  if(u.banned){bb.className='btn btn-s';bb.innerHTML='<i class="fa fa-unlock"></i> Unban';bs.style.display='none';}
+  else{bb.className='btn btn-g';bb.innerHTML='<i class="fa fa-ban"></i> Ban User';bs.style.display='none';}
+  openMo('moU');
+}
+async function saveUW(){
+  if(!curUM)return;
+  const newDep=parseFloat(document.getElementById('u-dep').value)||0;
+  const newWin=parseFloat(document.getElementById('u-win').value)||0;
+  const newBon=parseFloat(document.getElementById('u-bon').value)||0;
+  await db.ref('wallets/'+curUM).update({deposit:newDep,winning:newWin,bonus:newBon});
+  const u=allU[curUM];
+  await sendAutoMsg(curUM,'💰 Your wallet has been updated by admin. Deposit: ₹'+newDep+', Winning: ₹'+newWin+', Bonus: ₹'+newBon);
+  toast('Wallet updated & user notified! ✅','ok');
+}
+function togBan(){const u=allU[curUM];if(u?.banned){unbanU(curUM);closeMo('moU');}else document.getElementById('u-bsec').style.display='block';}
+async function doBan(){const r=document.getElementById('u-br').value.trim();if(!r){toast('Enter reason','er');return;}await db.ref('users/'+curUM).update({banned:true,banReason:r});await sendAutoMsg(curUM,'🚫 Your account has been suspended. Reason: '+r+'. Contact support to appeal.');closeMo('moU');toast('Banned!','ok');}
+function openBanMo(uid,un){curUM=uid;document.getElementById('banUN').textContent=un;document.getElementById('banR').value='';openMo('moBan');}
+async function execBan(){const r=document.getElementById('banR').value.trim();if(!r){toast('Enter reason','er');return;}await db.ref('users/'+curUM).update({banned:true,banReason:r});await sendAutoMsg(curUM,'🚫 Your account has been suspended. Reason: '+r+'. Contact support to appeal.');closeMo('moBan');toast('Banned!','ok');}
+async function unbanU(uid){if(!confirm('Unban?'))return;await db.ref('users/'+uid).update({banned:false,banReason:''});await sendAutoMsg(uid,'✅ Your account has been restored! You can now login and play. Welcome back! 🎮');toast('Unbanned!','ok');}
+
+function openMsgUser(){
+  closeMo('moU');
+  goSec('msgs');
+  if(curUM){
+    const u=allU[curUM];
+    if(u)openChat(curUM,u.username||'User');
+  }
+}
+
+/* ═══ MESSAGES ═══ */
+function showMUList(){document.getElementById('muPanel').style.display='block';document.getElementById('mcPanel').style.display='none';curMsgUid=null;}
+function loadMsgUsers(){
+  db.ref('messages').on('value',s=>{
+    allMU={};
+    if(s.exists()){
+      Object.entries(s.val()).forEach(([uid,msgs])=>{
+        const msgArr=Object.values(msgs);
+        const ur=msgArr.filter(m=>m.sender==='user'&&!m.readByAdmin).length;
+        const sorted=msgArr.sort((a,b)=>(b.ts||0)-(a.ts||0));
+        const last=sorted[0];
+        const withName=msgArr.find(m=>m.username);
+        const uname=withName?.username||allU[uid]?.username||last?.username||uid;
+        allMU[uid]={uid,unread:ur,lastMsg:last?.text||'',lastTs:last?.ts||0,username:uname};
+      });
+    }
+    // Also add users without messages
+    Object.entries(allU).forEach(([uid,u])=>{
+      if(!allMU[uid])allMU[uid]={uid,unread:0,lastMsg:'',lastTs:0,username:u.username||uid};
+    });
+    renderMU();
+  });
+}
+function renderMU(f=''){
+  const el=document.getElementById('muList');el.innerHTML='';
+  let entries=Object.values(allMU).sort((a,b)=>b.lastTs-a.lastTs);
+  if(f)entries=entries.filter(u=>u.username.toLowerCase().includes(f));
+  if(!entries.length){el.innerHTML='<div class="emp" style="padding:18px"><i class="fa fa-comment-slash"></i><p>No users</p></div>';return;}
+  entries.forEach(u=>{
+    const d=document.createElement('div');
+    d.style.cssText='padding:11px;border-radius:9px;cursor:pointer;margin-bottom:4px;background:'+(curMsgUid===u.uid?'var(--pb)':'var(--bg)')+';border:1.5px solid '+(curMsgUid===u.uid?'rgba(41,121,255,.3)':'var(--br)')+';transition:all .2s';
+    d.dataset.uid=u.uid;
+    const _un=u.username;
+    d.onclick=function(){openChat(this.dataset.uid,_un);};
+    d.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:700;color:var(--t)">'+u.username+'</span>'+(u.unread>0?'<span style="background:var(--d);color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700">'+u.unread+'</span>':'')+
+      '</div><div style="font-size:11px;color:var(--t3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(u.lastMsg?u.lastMsg.substring(0,40)+(u.lastMsg.length>40?'...':''):'No messages yet')+'</div>';
+    el.appendChild(d);
+  });
+}
+function filtMU(){renderMU(document.getElementById('muSrch').value.trim().toLowerCase());}
+
+let activeMsgListener=null;
+function openChat(uid,un){
+  if(activeMsgListener){db.ref('messages/'+(curMsgUid||uid)).off('value',activeMsgListener);activeMsgListener=null;}
+  curMsgUid=uid;window._chatUname=un;
+  document.getElementById('mcName').textContent=un;
+  document.getElementById('muPanel').style.display='none';
+  document.getElementById('mcPanel').style.display='block';
+  const el=document.getElementById('mc');
+  el.innerHTML='<div class="ld"><div class="sp"></div></div>';
+  activeMsgListener=db.ref('messages/'+uid).on('value',s=>{
+    document.getElementById('mcName').textContent=window._chatUname||un;
+    const msgs=s.val()||{};
+    Object.entries(msgs).forEach(([k,m])=>{if(m.sender==='user'&&!m.readByAdmin)db.ref('messages/'+uid+'/'+k+'/readByAdmin').set(true);});
+    const items=Object.values(msgs).sort((a,b)=>(a.ts||0)-(b.ts||0));
+    el.innerHTML='';
+    if(!items.length){el.innerHTML='<div class="emp" style="margin-top:28px"><i class="fa fa-comment"></i><p>No messages yet</p></div>';return;}
+    items.forEach(m=>{
+      const d=document.createElement('div');d.className='mb-a'+(m.sender==='admin'?' me':'');
+      const bubble=document.createElement('div');
+      const isAuto=m.type==='auto';
+      const ball=document.createElement('div');ball.className='mbl '+(m.sender==='admin'?'mi':'th');
+      if(isAuto)ball.style.cssText='background:linear-gradient(135deg,#10B981,#34D399);color:#fff;border-bottom-right-radius:3px';
+      ball.textContent=m.text||'';
+      if(isAuto){const autoBadge=document.createElement('div');autoBadge.style.cssText='font-size:9px;opacity:.8;margin-top:4px';autoBadge.textContent='🤖 Auto';ball.appendChild(autoBadge);}
+      const ts=document.createElement('div');ts.className='mts';ts.textContent=new Date(m.ts||0).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      bubble.appendChild(ball);bubble.appendChild(ts);d.appendChild(bubble);el.appendChild(d);
+    });
+    setTimeout(()=>el.scrollTop=el.scrollHeight,80);
+  });
+}
+
+async function sendAMsg(){
+  if(!curMsgUid)return;
+  const inp=document.getElementById('aMsg');const txt=inp.value.trim();if(!txt)return;
+  inp.value='';inp.focus();
+  await sendMsgToUser(curMsgUid,txt,'admin');
+}
+
+/* ═══ NOTIFICATIONS ═══ */
+function loadNotifUserDropdown(){
+  const el=document.getElementById('notifUser');
+  if(!el)return;
+  const cur=el.value;
+  el.innerHTML='<option value="">Select user...</option>';
+  Object.entries(allU).forEach(([uid,u])=>{
+    const opt=document.createElement('option');opt.value=uid;opt.textContent=(u.username||'—')+' ('+uid.substr(0,8)+')';el.appendChild(opt);
+  });
+  el.value=cur;
+}
+
+async function sendNotif(){
+  const title=document.getElementById('nTitle').value.trim();
+  const t=document.getElementById('nTxt').value.trim();
+  if(!t){toast('Enter message','er');return;}
+  await db.ref('notifications').push().set({title:title||'Bharat Battle',text:t,ts:Date.now(),type:'broadcast'});
+  document.getElementById('nTitle').value='';document.getElementById('nTxt').value='';
+  toast('Sent to all users! 🔥','ok');
+}
+
+async function sendUserNotif(){
+  const uid=document.getElementById('notifUser').value;
+  const t=document.getElementById('nUserTxt').value.trim();
+  if(!uid){toast('Select a user','er');return;}
+  if(!t){toast('Enter message','er');return;}
+  // Send as message to specific user
+  await sendMsgToUser(uid,t,'admin');
+  document.getElementById('nUserTxt').value='';
+  toast('Message sent to user! ✅','ok');
+}
+
+function loadNotifList(){
+  db.ref('notifications').on('value',s=>{
+    const el=document.getElementById('nList');el.innerHTML='';
+    if(!s.exists()){el.innerHTML='<div class="emp"><i class="fa fa-bell-slash"></i><p>No notifications</p></div>';return;}
+    Object.entries(s.val()).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).forEach(([k,n])=>{
+      const d=document.createElement('div');d.className='nb';
+      const t=document.createElement('div');t.className='nt';
+      t.innerHTML='<strong>'+(n.title||'Bharat Battle')+'</strong><br>'+(n.text||'')+'<div class="nd">'+fd(n.ts)+'</div>';
+      const b=document.createElement('button');b.className='btn btn-ic btn-sm';b.style.cssText='background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:var(--d);flex-shrink:0';b.dataset.k=k;b.onclick=function(){db.ref('notifications/'+this.dataset.k).remove();};b.innerHTML='<i class="fa fa-trash"></i>';
+      d.appendChild(t);d.appendChild(b);el.appendChild(d);
+    });
+  });
+}
+async function clearNotifs(){if(!confirm('Delete all notifications?'))return;await db.ref('notifications').remove();toast('Cleared','in');}
+
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');}));
+</script>
+</body>
+</html>
